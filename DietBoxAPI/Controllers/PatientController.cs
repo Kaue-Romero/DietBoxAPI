@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 [Route("api/[controller]")]
 [ApiController]
 [Authorize(Roles = "Nutritionist")]
+[ProducesResponseType(StatusCodes.Status200OK)]
+[ProducesResponseType(StatusCodes.Status401Unauthorized)]
 public class PatientController : ControllerBase
 {
     private readonly IPatientService _patientService;
@@ -58,5 +60,12 @@ public class PatientController : ControllerBase
         if (!success) return NotFound();
 
         return NoContent();
+    }
+
+    [HttpGet("{id}/mealplans/today")]
+    public async Task<IActionResult> AsyncGetMealPlansToday(int id)
+    {
+        var success = await _patientService.AsyncGetMealPlansToday(id);
+        return Ok(success);
     }
 }

@@ -1,4 +1,5 @@
-﻿using DietBoxAPI.DB.Models;
+﻿using Bogus;
+using DietBoxAPI.DB.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace DietBoxAPI.DB
@@ -22,7 +23,6 @@ namespace DietBoxAPI.DB
                 });
             }
 
-            // Seed de Nutritionist
             if (!context.Nutritionists.Any())
             {
                 context.Nutritionists.Add(new Nutritionist
@@ -30,6 +30,25 @@ namespace DietBoxAPI.DB
                     Username = "nutri",
                     PasswordHash = BCrypt.Net.BCrypt.HashPassword("nutri123")
                 });
+            }
+
+            if (!context.Foods.Any())
+            {
+                var foodFaker = new Faker<Food>()
+                    .RuleFor(f => f.Name, f => f.Commerce.ProductName())
+                    .RuleFor(f => f.Calories, f => f.Random.Int(50, 1500));
+
+                var foods = foodFaker.Generate(50);
+                context.Foods.AddRange(foods);
+            }
+
+            if (!context.Patients.Any())
+            {
+                var patientFaker = new Faker<Patient>()
+                    .RuleFor(p => p.Name, f => f.Name.FullName());
+
+                var patients = patientFaker.Generate(30);
+                context.Patients.AddRange(patients);
             }
 
             context.SaveChanges();

@@ -10,6 +10,12 @@ namespace DietBoxAPI.DB.Models
         [Required]
         public string Name { get; set; }
 
+        [Required]
+        public int PatientId { get; set; }
+        public Patient Patient { get; set; }
+
+        public DateOnly Date { get; set; }
+
         // Relação muitos para muitos com Food
         public ICollection<MealPlanFood> MealPlanFoods { get; set; }
     }

@@ -8,5 +8,6 @@ public interface IPatientService
     Task<PatientReadDto> CreateAsync(PatientCreateDto dto);
     Task<bool> UpdateAsync(int id, PatientUpdateDto dto);
     Task<bool> DeleteAsync(int id);
+    Task<IEnumerable<MealPlanReadDto>> AsyncGetMealPlansToday(int id);
 }
 

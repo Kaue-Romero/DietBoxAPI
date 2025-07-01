@@ -1,4 +1,5 @@
 using DietBoxAPI.DB;
+using DietBoxAPI.Interfaces;
 using DietBoxAPI.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -61,7 +62,8 @@ if (string.IsNullOrEmpty(secretKey))
 }
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options => {
+    .AddJwtBearer(options =>
+    {
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
@@ -79,6 +81,9 @@ builder.Services.AddAuthorization();
 
 builder.Services.AddScoped<INutritionistService, NutritionistService>();
 builder.Services.AddScoped<IPatientService, PatientService>();
+builder.Services.AddScoped<IFoodService, FoodService>();
+builder.Services.AddScoped<IMealPlanService, MealPlanService>();
+
 
 var app = builder.Build();
 

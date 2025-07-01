@@ -3,6 +3,7 @@
     using DietBoxAPI.DB;
     using DietBoxAPI.DB.Models;
     using DietBoxAPI.DTO;
+    using DietBoxAPI.Interfaces;
     using Microsoft.EntityFrameworkCore;
 
     public class PatientService : IPatientService
@@ -79,5 +80,45 @@
             await _context.SaveChangesAsync();
             return true;
         }
+
+        public async Task<IEnumerable<MealPlanReadDto>> AsyncGetMealPlansToday(int id)
+        {
+
+            var patient = await _context.Patients
+                .FirstOrDefaultAsync(p => p.Id == id && !p.IsDeleted);
+            Console.Write(patient);
+            if(patient == null)
+                return Enumerable.Empty<MealPlanReadDto>();
+
+            var today = DateOnly.FromDateTime(DateTime.Today);
+
+            var plans = await _context.MealPlans
+                .Where(mp => mp.Date == today)
+                .Where(mp => mp.PatientId == id)
+                .Include(mp => mp.MealPlanFoods)
+                    .ThenInclude(mpf => mpf.Food)
+                .ToListAsync();
+
+            return plans.Select(plan =>
+            {
+                var foods = plan.MealPlanFoods.Select(mpf => new FoodReadDto
+                {
+                    Id = mpf.Food.Id,
+                    Name = mpf.Food.Name,
+                    Calories = mpf.Food.Calories
+                }).ToList();
+
+                return new MealPlanReadDto
+                {
+                    Id = plan.Id,
+                    Name = plan.Name,
+                    Date = plan.Date,
+                    PatientId = plan.PatientId,
+                    Foods = foods,
+                    TotalCalories = foods.Sum(f => f.Calories)
+                };
+            });
+        }
+
     }
 }

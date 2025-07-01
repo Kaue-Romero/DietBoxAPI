@@ -4,6 +4,7 @@ using DietBoxAPI.DB;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DietBoxAPI.Migrations
 {
     [DbContext(typeof(DietBoxDbContext))]
-    partial class DietBoxDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250701192734_RemoveDescriptionFromFood")]
+    partial class RemoveDescriptionFromFood
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,8 +54,8 @@ namespace DietBoxAPI.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<float>("Calories")
-                        .HasColumnType("float");
+                    b.Property<int>("Calories")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -71,14 +74,11 @@ namespace DietBoxAPI.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateOnly>("Date")
-                        .HasColumnType("date");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<int>("PatientId")
+                    b.Property<int?>("PatientId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -146,13 +146,10 @@ namespace DietBoxAPI.Migrations
 
             modelBuilder.Entity("DietBoxAPI.DB.Models.MealPlan", b =>
                 {
-                    b.HasOne("DietBoxAPI.DB.Models.Patient", "Patient")
+                    b.HasOne("DietBoxAPI.DB.Models.Patient", null)
                         .WithMany("MealPlans")
                         .HasForeignKey("PatientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Patient");
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("DietBoxAPI.DB.Models.MealPlanFood", b =>

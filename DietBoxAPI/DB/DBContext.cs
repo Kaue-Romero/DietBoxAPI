@@ -22,7 +22,6 @@ namespace DietBoxAPI.DB
             modelBuilder.Entity<MealPlanFood>()
                 .HasKey(mp => new { mp.MealPlanId, mp.FoodId });
 
-            // Configurar relacionamento MealPlanFood
             modelBuilder.Entity<MealPlanFood>()
                 .HasOne(mp => mp.MealPlan)
                 .WithMany(m => m.MealPlanFoods)
@@ -33,10 +32,10 @@ namespace DietBoxAPI.DB
                 .WithMany()
                 .HasForeignKey(mp => mp.FoodId);
 
-            // Relação Patient -> MealPlans (1:N)
             modelBuilder.Entity<Patient>()
                 .HasMany(p => p.MealPlans)
-                .WithOne()
+                .WithOne(mp => mp.Patient)
+                .HasForeignKey(mp => mp.PatientId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }
