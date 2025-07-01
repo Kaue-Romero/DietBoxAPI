@@ -10,5 +10,6 @@ namespace DietBoxAPI.DB.Models
         public string Username { get; set; }
         [Required]
         public string PasswordHash { get; set; }
+        public string Role => "Admin";
     }
 }

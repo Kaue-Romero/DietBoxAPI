@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace DietBoxAPI.DB.Models
 {
@@ -9,6 +10,9 @@ namespace DietBoxAPI.DB.Models
         [Required]
         public string Username { get; set; }
         [Required]
+        [JsonIgnore]
         public string PasswordHash { get; set; }
+        [JsonIgnore]
+        public string Role => "Nutritionist";
     }
 }

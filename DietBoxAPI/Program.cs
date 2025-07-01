@@ -1,5 +1,9 @@
+using DietBoxAPI.DB;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using System.Security.Claims;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,34 +13,70 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-builder.Services.AddAuthentication(options =>
+builder.Services.AddSwaggerGen(c =>
 {
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-    var jwtKey = builder.Configuration["Jwt:Key"];
-    if (string.IsNullOrEmpty(jwtKey))
-    {
-        throw new InvalidOperationException("Jwt:Key não está configurado no appsettings.json.");
-    }
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Diet Box API", Version = "v1" });
 
-    options.TokenValidationParameters = new TokenValidationParameters
+    // Define Bearer scheme
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        ValidateIssuer = true, // valida emissor do token
-        ValidateAudience = true, // valida audiência do token
-        ValidateLifetime = true, // valida validade
-        ValidateIssuerSigningKey = true, // valida chave de assinatura
-        ValidIssuer = builder.Configuration["Jwt:Issuer"], // deve estar no appsettings.json
-        ValidAudience = builder.Configuration["Jwt:Audience"], // deve estar no appsettings.json
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
-    };
+        Description = "JWT Authorization header using the Bearer scheme. Example: 'Bearer 12345abcdef'",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT"
+    });
+
+    // Tell Swagger that Bearer token is required globally
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>() // No scopes
+        }
+    });
 });
 
+builder.Services.AddDbContext<DietBoxDbContext>(options =>
+    options.UseMySql(
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection"))
+    ));
+
+var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+var secretKey = jwtSettings["SecretKey"];
+
+if (string.IsNullOrEmpty(secretKey))
+{
+    throw new InvalidOperationException("A chave secreta não está configurada.");
+}
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options => {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = jwtSettings["Issuer"],
+            ValidAudience = jwtSettings["Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
+            RoleClaimType = ClaimTypes.Role
+        };
+    });
+
 builder.Services.AddAuthorization();
+
+builder.Services.AddScoped<INutritionistService, NutritionistService>();
 
 var app = builder.Build();
 
@@ -47,10 +87,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
 app.MapControllers();
+
+DBInitializer.Seed(app.Services);
 
 app.Run();
