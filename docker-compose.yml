@@ -1,0 +1,6 @@
+services:
+  dietboxapi:
+    image: ${DOCKER_REGISTRY-}dietboxapi
+    build:
+      context: .
+      dockerfile: DietBoxAPI/Dockerfile

@@ -1,0 +1,6 @@
+@DietBoxAPI_HostAddress = http://localhost:5064
+
+GET {{DietBoxAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
