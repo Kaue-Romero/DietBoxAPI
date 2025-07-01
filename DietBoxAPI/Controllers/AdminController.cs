@@ -1,4 +1,5 @@
 ﻿using DietBoxAPI.DB.Models;
+using DietBoxAPI.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -31,17 +32,21 @@ public class AdminController : ControllerBase
     }
 
     [HttpPost("nutritionist")]
-    public ActionResult<Nutritionist> Create(Nutritionist nutritionist)
+    public ActionResult<Nutritionist> Create([FromBody] NutritionistCreateDto dto)
     {
-        var created = _nutritionistService.Create(nutritionist);
+        var newNutritionist = new Nutritionist
+        {
+            Username = dto.Username,
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.PasswordHash)
+        };
+        var created = _nutritionistService.Create(newNutritionist);
         return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
     }
 
     [HttpPut("nutritionist/{id}")]
-    public IActionResult Update(int id, Nutritionist nutritionist)
+    public IActionResult Update(int id, [FromBody] NutritionistUpdateDto dto)
     {
-        if (id != nutritionist.Id) return BadRequest();
-        var updated = _nutritionistService.Update(id, nutritionist);
+        var updated = _nutritionistService.Update(id, dto);
         if (!updated) return NotFound();
         return NoContent();
     }

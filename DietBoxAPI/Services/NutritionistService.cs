@@ -1,5 +1,6 @@
 ﻿using DietBoxAPI.DB;
 using DietBoxAPI.DB.Models;
+using DietBoxAPI.DTO;
 using Microsoft.EntityFrameworkCore;
 
 public class NutritionistService : INutritionistService
@@ -22,17 +23,28 @@ public class NutritionistService : INutritionistService
         return nutritionist;
     }
 
-    public bool Update(int id, Nutritionist nutritionist)
+    public bool Update(int id, NutritionistUpdateDto dto)
     {
         var existing = _context.Nutritionists.Find(id);
         if (existing == null) return false;
 
-        existing.Username = nutritionist.Username;
-        existing.PasswordHash = nutritionist.PasswordHash; // lembre-se do hash!
+        // Atualiza só se o campo não for nulo ou vazio
+        if (!string.IsNullOrEmpty(dto.Username))
+        {
+            existing.Username = dto.Username;
+        }
+
+        if (!string.IsNullOrEmpty(dto.PasswordHash))
+        {
+            existing.PasswordHash = dto.PasswordHash; // lembre-se de hashear antes, se aplicável
+        }
+
+        // atualizar outros campos conforme necessário...
 
         _context.SaveChanges();
         return true;
     }
+
 
     public bool Delete(int id)
     {

@@ -11,5 +11,7 @@ namespace DietBoxAPI.DB.Models
         public string Name { get; set; }
 
         public ICollection<MealPlan> MealPlans { get; set; }
+
+        public bool IsDeleted { get; set; } = false;
     }
 }
