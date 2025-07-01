@@ -6,6 +6,17 @@
       "serviceActions": {
         "dietboxapi": "StartDebugging"
       }
+    },
+    "docker-compose": {
+      "commandName": "DockerCompose",
+      "serviceName": "dietboxapi",
+      "launchBrowser": true,
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/swagger",
+      "publishAllPorts": true,
+      "useSSL": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
     }
   }
 }

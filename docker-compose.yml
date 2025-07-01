@@ -4,3 +4,19 @@ services:
     build:
       context: .
       dockerfile: DietBoxAPI/Dockerfile
+
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: MyStrongPassword!
+      MYSQL_DATABASE: dietbox
+      MYSQL_USER: dietboxuser
+      MYSQL_PASSWORD: DietBoxUserPass!
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:

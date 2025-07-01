@@ -1,0 +1,14 @@
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace DietBoxAPI.DB.Models
+{
+    public class Food
+    {
+        [Key]
+        public int Id { get; set; }
+        [Required]
+        public string Name { get; set; }
+        public int Calories { get; set; }
+        public string Description { get; set; }
+    }
+}
