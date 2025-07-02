@@ -21,8 +21,11 @@ jobs:
       with:
         dotnet-version: 8.0.x
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore DietBoxAPI.sln
+
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build DietBoxAPI.sln --no-restore
+
     - name: Test
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet test DietBoxAPI.sln --no-build --verbosity normal
+
