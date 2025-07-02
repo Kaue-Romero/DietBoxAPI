@@ -94,31 +94,13 @@ docker-compose up --build
 API will be available at:  
 `http://localhost:8080`
 
-#### Manual Setup (No Docker):
-
-1. **Configure MySQL**  
-   Update `appsettings.json` with the example credentials
- ```json
-{
-  "JwtSettings": {
-    "SecretKey": "mysupersecretkeythatneeds32chars!",
-    "Issuer": "DietBox",
-    "Audience": "DietBoxUsers",
-    "ExpiresInMinutes": 60
-  },
-  "ConnectionStrings": {
-    "DefaultConnection": "Server=db;Port=3306;Database=dietbox;User=dietboxuser;Password=DietBoxUserPass!;"
-  }
-}
-```
-
-3. **Apply Migrations:**
+1. **Apply Migrations:**
 
 ```bash
 docker exec -it <api_container_name> dotnet ef database update
 ```
 
-3. **Run the API:**
+2. **Run the API:**
 
 ```bash
 docker exec -it <api_container_name> dotnet run
