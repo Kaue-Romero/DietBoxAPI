@@ -49,6 +49,6 @@ public class PatientServicesTests
 
         var result = await _service.GetAllAsync();
 
-        Assert.Equal(2, result.Count());
+        Assert.Equal(2, result.Count()); 
     }
 }
