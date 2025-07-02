@@ -11,7 +11,10 @@ namespace DietBoxAPI.DB
             using var scope = serviceProvider.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<DietBoxDbContext>();
 
-            context.Database.Migrate();
+            if (context.Database.IsRelational())
+            {
+                context.Database.Migrate();
+            }
 
             // Seed de Admin
             if (!context.Admins.Any())

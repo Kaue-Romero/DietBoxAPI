@@ -95,7 +95,10 @@ if (app.Environment.IsDevelopment())
 }
 
 
-app.UseHttpsRedirection();
+if (!app.Environment.IsEnvironment("Testing"))
+{
+    app.UseHttpsRedirection();
+}
 
 app.UseAuthorization();
 
@@ -104,3 +107,5 @@ app.MapControllers();
 DBInitializer.Seed(app.Services);
 
 app.Run();
+
+public partial class Program { }
