@@ -92,22 +92,7 @@ docker-compose up --build
 ```
 
 API will be available at:  
-`http://localhost:8080`
-
-1. **Apply Migrations:**
-
-```bash
-docker exec -it <api_container_name> dotnet ef database update
-```
-
-2. **Run the API:**
-
-```bash
-docker exec -it <api_container_name> dotnet run
-```
-
-API will be available at:  
-`https://localhost:7001` or `http://localhost:5000`
+`https://localhost:8081/swagger`
 
 ---
 
@@ -115,8 +100,7 @@ API will be available at:
 
 Access Swagger UI:
 
-- Docker: `http://localhost:8080/swagger`
-- Local: `https://localhost:7001/swagger`
+- Docker: `https://localhost:8081/swagger`
 
 ---
 
