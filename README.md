@@ -124,8 +124,8 @@ Access Swagger UI:
 
 | Role          | Username                | Password               |
 |---------------|-------------------------|------------------------|
-| **ADMIN**     | `admin@example.com`     | `AdminPassword123`     |
-| **NUTRITIONIST** | `nutritionist@example.com` | `NutritionistPassword123` |
+| **ADMIN**     | `admin`     | `admin123`     |
+| **NUTRITIONIST** | `nutri` | `nutri123` |
 
 ---
 
