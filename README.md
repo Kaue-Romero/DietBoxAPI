@@ -90,6 +90,7 @@ cd meal-plan-api
 ```bash
 docker-compose up --build
 ```
+### É DE EXTREMA IMPORTANCIA AGUARDAR O MYSQL INICIALIZAR TOTALMENTE
 
 API will be available at:  
 `https://localhost:8081/swagger`
